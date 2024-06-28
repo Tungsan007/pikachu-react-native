@@ -1,75 +1,119 @@
 
-import { createPokemon } from '@/redux/slice/pokemonSlice';
-import { useEffect } from 'react';
-import { View, Text, Button, StyleSheet, Image, ScrollView } from 'react-native'
+import { createPokemon, setSelect, unSelect, updateValidSelect } from '@/redux/slice/pokemonSlice';
+import { useCallback, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import { images } from '@/data/data';
+import { styles } from '../style/styles'
+import { addSelectPokemon, removeSelectPokemon } from '@/redux/slice/selectPokemonSlice';
+import Algorithm from '../algorithm/algorithm'
 
 const Game = () => {
 
    const matrix = useSelector((state) => state.pokemon.pokeArray)
    const dispatch = useDispatch();
-   console.log(matrix)
+   const selectPokemon = useSelector((state) => state.selectPokemon.selectPokemon)
+   const { checkPath, resetValidPath } = Algorithm();
+   console.log(selectPokemon)
+
+   const checkHandler = useCallback(() => {
+      if (selectPokemon.length === 2) {
+        //kiem tra img co giong nhau?
+        if (selectPokemon[0].data.img === selectPokemon[1].data.img) {
+          //kiem tra tinh hop le cua duong di
+          const isValid = checkPath(matrix, selectPokemon[0], selectPokemon[1]);
+  
+          if (isValid) {
+            console.log("duong di hop le");
+            dispatch(updateValidSelect({ row: selectPokemon[0].row, col: selectPokemon[0].col }));
+            dispatch(updateValidSelect({ row: selectPokemon[1].row, col: selectPokemon[1].col }));
+            resetValidPath();
+          } else {
+            // console.log("duong di khong hop le");
+            // console.log("bo chon");
+            dispatch(unSelect(selectPokemon[0]));
+            dispatch(unSelect(selectPokemon[1]));
+          }
+        } else {
+          // img khong giong nhau
+          // console.log("bo chon");
+          dispatch(unSelect(selectPokemon[0]));
+          dispatch(unSelect(selectPokemon[1]));
+        }
+  
+        // Xoa cac chosen poke:
+        dispatch(removeSelectPokemon());
+      }
+      // const isVali = useCheck(pokeChoose)
+    }, [selectPokemon, dispatch, matrix, checkPath, resetValidPath]);
+    useEffect(() => {
+      checkHandler();
+    }, [selectPokemon, checkHandler]);
+
    useEffect(() => {
       const pokeArrayDefault = localStorage.getItem("pokeArray");
   
       if (!pokeArrayDefault) {
-         console.log("chay vao if")
         dispatch(createPokemon())
+      } else {
+         dispatch(createPokemon())
       }
     }, [dispatch]);
 
+    function handleSelect(item) {
+      dispatch(setSelect(item))
+      dispatch(addSelectPokemon([item]))
+    }
+
   return (
    <>
-      <View className="btn-container">
-        <Button title='Chơi lại'/>
-        <Button title='Trộn'/>
-      </View>
+      <ImageBackground style={styles.img_back} source={require('../assets/images/background.png')}
+         resizeMode='cover'
+      >
+         <View style={styles.btn} className="btn-container">
+            <TouchableOpacity style={styles.button}>
+               <Text style={styles.buttonText}>Chơi lại</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button}>
+               <Text style={styles.buttonText}>Trộn</Text>
+            </TouchableOpacity>
+         </View>
 
-      <View style={styles.table}>
-         {matrix?.map((row, index) => (
-            <View style={styles.row_pokemon} key={index}>
-               {row.map((item, i) => (
-                  console.log(item.data.img),
-                  <View key={i}
-                     //  className={`cell-table ${
-                     //    checkPathNode(item.row, item.col) ? "path" : ""
-                     //  }`}
-                  >
-                     <Image
-                        //  className={`item-img ${item.status === 0 ? "hidden" : ""} ${
-                        //    item.status === 1 ? "chosen" : ""
+         <View style={styles.table}>
+            {}
+            {matrix?.map((row, index) => (
+               <View style={styles.row_pokemon} key={index}>
+                  {row.map((item, i) => (
+                     <View key={i}
+                        //  className={`cell-table ${
+                        //    checkPathNode(item.row, item.col) ? "path" : ""
                         //  }`}
-                        style={styles.img_pokemon}
-                        source={images[item.data.img]}
-                        alt=""
-                        //  onClick={() => {
-                        //    handleSelect(item);
-                        //  }}
-                     />
-                  </View>
-               ))}
-            </View>
-         ))}
-      </View>
-    </>
+                     >
+                        <Image
+                           //  className={`item-img ${item.status === 0 ? "hidden" : ""} ${
+                           //    item.status === 1 ? "chosen" : ""
+                           //  }`}
+                           style={[
+                              styles.img_pokemon,
+                              item.status === 0 ? styles.hidden : null,
+                              item.status === 1 ? styles.chosen : null
+                           ]}
+                           source={images[item.data.img]}
+                           alt=""
+                            onClick={() => {
+                              handleSelect(item);
+                            }}
+                        />
+                     </View>
+                  ))}
+               </View>
+            ))}
+         </View>
+      </ImageBackground>
+   </>
   )
 }
 
-const styles = StyleSheet.create({
-   table: {
-      display: 'flex',
-      flexDirection: 'row'
-   },
 
-   img_pokemon: {
-      width: 36,
-      height: 36
-   },
-
-   row_pokemon: {
-      display: 'flex'
-   }
-});
 
 export default Game

@@ -1,6 +1,6 @@
-import { put, all, takeEvery} from 'redux-saga/effects'
+import { put, all, takeEvery, select} from 'redux-saga/effects'
 import { pokeData } from '../data/data';
-import { createPokemonSuccess } from '@/redux/slice/pokemonSlice';
+import { createPokemonFailure, createPokemonSuccess, setSelectSuccess, unSelectSuccess, updateValidSelectSuccess } from '@/redux/slice/pokemonSlice';
 
 const shuffleArray = (array) => {
    let currentIndex = array.length;
@@ -55,16 +55,86 @@ function* handleCreatePokemon() {
                B[i + 1][j + 1] = A[i][j];
             }
          }
+         localStorage.setItem("pokeArray", JSON.stringify(B));
          yield put(createPokemonSuccess(B))
-   } 
+   } else {
+      const pokeArray = pokeArrayDefault ? JSON.parse(pokeArrayDefault) : [];
+      yield put(createPokemonSuccess(pokeArray))
+   }
 }
 
+function* selectPokemon(action) {
+   const state = yield select((state) => state)
+   const newSelectArr = state.pokemon.pokeArray.map((row) => {
+      return row.map((cell) => {
+        if (
+          cell.row === action.payload.row &&
+          cell.col === action.payload.col
+        ) {
+          return { ...cell, status: 1 };
+        }
+        return cell;
+      });
+    });
+   yield put(setSelectSuccess(newSelectArr));
+}
+
+function* handleUpdateSelect(action) {
+   const state = yield select((state) => state)
+   const updatedArray = state.pokemon.pokeArray.map((row) => {
+      return row.map((cell) => {
+         if(
+            cell.row === action.payload.row &&
+            cell.col === action.payload.col
+         ) {
+            return {...cell, status: 0};
+         } else {
+            return cell;
+         }
+      })
+   })
+   yield put(updateValidSelectSuccess(updatedArray))
+}
+
+function* handleUnSelect(action) {
+   const state = yield select((state) => state)
+   const updatedArray = state.pokemon.pokeArray.map((row) => {
+      return row.map((cell) => {
+         if(
+            cell.row === action.payload.row &&
+            cell.col === action.payload.col
+         ) {
+            return {...cell, status: 5};
+         } else {
+            return cell;
+         }
+      })
+   })
+   yield put(unSelectSuccess(updatedArray))
+}
+
+//////////////////////////////////////////////////
 function* watchCreatePokemon() {
    yield takeEvery('pokemon/createPokemon', handleCreatePokemon)
+}
+
+function* watchSelectPokemon() {
+   yield takeEvery('pokemon/setSelect', selectPokemon)
+}
+
+function* watchUpdateSelect() {
+   yield takeEvery('pokemon/updateValidSelect', handleUpdateSelect)
+}
+
+function* watchUnSelect() {
+   yield takeEvery('pokemon/unSelect', handleUnSelect)
 }
 
 export function* pokemonSaga() {
    yield all([
       watchCreatePokemon(),
+      watchSelectPokemon(),
+      watchUpdateSelect(),
+      watchUnSelect(),
    ])
 }

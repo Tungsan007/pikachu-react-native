@@ -11,16 +11,39 @@ export const pokemonSlice = createSlice({
          state.isLoading = true
        },
        createPokemonSuccess: (state, action) => {
-         localStorage.setItem("pokeArray", JSON.stringify(action.payload));
          state.pokeArray = action.payload
-         console.log(action.payload)
          state.isLoading = false
        },
        createPokemonFailure: (state) => {
          state.isLoading = false
        },
+       ///////////////////////////////////////
+      setSelect: () => {
+         //Trigger select
+      },
+      setSelectSuccess: (state, action) => {
+         // console.log(action.payload)
+         state.pokeArray = action.payload
+      },
+      ////////////////////////////////////////
+      
+      updateValidSelect: () => {
+         //Trigger updateValidSelect
+      },
+      updateValidSelectSuccess: (state, action) => {
+         state.pokeArray = action.payload
+      },
+      ////////////////////////////////////////
+
+      unSelect: () => {
+         //Trigger
+      },
+      unSelectSuccess: (state, action) => {
+         state.pokeArray = action.payload
+      },
+
    }
 })
 
-export const { createPokemon, createPokemonSuccess, createPokemonFailure } = pokemonSlice.actions;
+export const { createPokemon, createPokemonSuccess, createPokemonFailure, setSelect, setSelectSuccess,updateValidSelect, updateValidSelectSuccess, unSelect, unSelectSuccess } = pokemonSlice.actions;
 export default pokemonSlice.reducer;

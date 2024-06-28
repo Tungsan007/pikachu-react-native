@@ -5,7 +5,6 @@ import Game from '../section/Game'
 export default function Index() {
   
   const [isModalVisible, SetIsModalVisible] = useState(true)
-  
   return (
     <View
       style={{
