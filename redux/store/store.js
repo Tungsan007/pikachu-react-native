@@ -4,16 +4,41 @@ import pokemonReducer from '../slice/pokemonSlice'
 import { pokemonSaga } from '../../saga/pokemonSaga'
 import selectPokemonReducer from '../slice/selectPokemonSlice'
 import { addSelectPokemonSaga } from '../../saga/selectPokemonSaga'
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { 
+   persistReducer, 
+   persistStore,
+   FLUSH,
+   REHYDRATE,
+   PAUSE,
+   PERSIST,
+   PURGE,
+   REGISTER,} from 'redux-persist'
 
 const saga = createSagaMiddleware();
 
-export default configureStore({
+const pikachuPersistConfig = {
+   key: "pikachu",
+   storage: AsyncStorage,
+   version: 1
+}
+
+const pokemonPersistReducer = persistReducer(pikachuPersistConfig, pokemonReducer)
+
+const store = configureStore({
    reducer: {
-      pokemon: pokemonReducer,
+      pokemon: pokemonPersistReducer,
       selectPokemon: selectPokemonReducer
    },
-   middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(saga)
+   middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(saga)
 })
 
 saga.run(pokemonSaga)
 saga.run(addSelectPokemonSaga)
+
+export const persistor = persistStore(store)
+export default store;

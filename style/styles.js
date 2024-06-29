@@ -8,8 +8,8 @@ export const styles = StyleSheet.create({
    },
 
    img_pokemon: {
-      width: 46,
-      height: 46
+      width: 36,
+      height: 36
    },
 
    row_pokemon: {
@@ -30,6 +30,9 @@ export const styles = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center'
    },
+   buttonText: {
+      color: 'white'
+   },
    img_back: {
       flex: 1,
       justifyContent: 'center',
@@ -44,6 +47,18 @@ export const styles = StyleSheet.create({
       borderWidth: 2,
       borderStyle: 'solid',
       borderColor: 'rgb(120, 67, 200)',
-   }
-
+   },
+   btn_go: {
+      paddingHorizontal: 80,
+      paddingVertical: 14,
+      marginTop: 2,
+      backgroundColor: 'green',
+      borderRadius: 6,
+      shadowColor: 'rgba(0,0,0,0.65)',
+      shadowOffset: 4,
+   },
+   pathEffect: {
+      position: 'relative',
+      backgroundColor: '#56F920'
+   },
 });

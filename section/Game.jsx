@@ -1,6 +1,6 @@
 
-import { createPokemon, setSelect, unSelect, updateValidSelect } from '@/redux/slice/pokemonSlice';
-import { useCallback, useEffect } from 'react';
+import { createPokemon, resetPokemonState, setSelect, shuffle, unSelect, updateValidSelect } from '@/redux/slice/pokemonSlice';
+import { useCallback, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
 import { images } from '@/data/data';
@@ -13,8 +13,9 @@ const Game = () => {
    const matrix = useSelector((state) => state.pokemon.pokeArray)
    const dispatch = useDispatch();
    const selectPokemon = useSelector((state) => state.selectPokemon.selectPokemon)
-   const { checkPath, resetValidPath } = Algorithm();
-   console.log(selectPokemon)
+   const { checkPath, resetValidPath, latestPath, resetLatestPathHandler } = Algorithm();
+
+   const [regame, setRegame] = useState(false)
 
    const checkHandler = useCallback(() => {
       if (selectPokemon.length === 2) {
@@ -24,7 +25,6 @@ const Game = () => {
           const isValid = checkPath(matrix, selectPokemon[0], selectPokemon[1]);
   
           if (isValid) {
-            console.log("duong di hop le");
             dispatch(updateValidSelect({ row: selectPokemon[0].row, col: selectPokemon[0].col }));
             dispatch(updateValidSelect({ row: selectPokemon[1].row, col: selectPokemon[1].col }));
             resetValidPath();
@@ -46,35 +46,72 @@ const Game = () => {
       }
       // const isVali = useCheck(pokeChoose)
     }, [selectPokemon, dispatch, matrix, checkPath, resetValidPath]);
-    useEffect(() => {
+    useEffect(() => {     
       checkHandler();
     }, [selectPokemon, checkHandler]);
 
    useEffect(() => {
-      const pokeArrayDefault = localStorage.getItem("pokeArray");
-  
-      if (!pokeArrayDefault) {
-        dispatch(createPokemon())
-      } else {
-         dispatch(createPokemon())
+      if(matrix.length == 0) {               
+         dispatch(createPokemon())            
       }
-    }, [dispatch]);
+    }, [regame, dispatch]);
 
     function handleSelect(item) {
-      dispatch(setSelect(item))
+      dispatch(setSelect(item))          
       dispatch(addSelectPokemon([item]))
     }
 
+    function handleRegame() {
+      dispatch(resetPokemonState());
+      setRegame(pre => !pre);
+    }
+
+    const shuffleHandler = () => {
+    
+      if (selectPokemon.length === 2) {
+        dispatch(unSelect(selectPokemon[0]));
+        dispatch(unSelect(selectPokemon[1]));
+      }
+      if (selectPokemon.length === 1) {
+        dispatch(unSelect(selectPokemon[0]));
+      }
+  
+      dispatch(removeSelectPokemon());
+  
+      //chay shuffle
+      dispatch(shuffle());
+    };
+
+    const checkPathNode = (row, col) => {
+      const filterArr = latestPath.filter((i) => i.row === row && i.col === col);
+      //TH diem can xet co trong latestPath Array:
+      if (filterArr.length > 0) {
+        return true;
+      }
+  
+      return false;
+    };
+
+    useEffect(() => {
+      if (latestPath.length > 0) {
+        const timer = setTimeout(() => {
+          resetLatestPathHandler();
+        }, 800); 
+  
+        
+        return () => clearTimeout(timer);
+      }
+    }, [latestPath, resetLatestPathHandler]);
   return (
    <>
       <ImageBackground style={styles.img_back} source={require('../assets/images/background.png')}
          resizeMode='cover'
       >
          <View style={styles.btn} className="btn-container">
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity onPress={() => handleRegame()} style={styles.button}>
                <Text style={styles.buttonText}>Chơi lại</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity onPress={() => shuffleHandler()} style={styles.button}>
                <Text style={styles.buttonText}>Trộn</Text>
             </TouchableOpacity>
          </View>
@@ -85,25 +122,21 @@ const Game = () => {
                <View style={styles.row_pokemon} key={index}>
                   {row.map((item, i) => (
                      <View key={i}
-                        //  className={`cell-table ${
-                        //    checkPathNode(item.row, item.col) ? "path" : ""
-                        //  }`}
+                        style={[
+                           checkPathNode(item.row, item.col) ? styles.pathEffect : ""
+                        ]}
                      >
-                        <Image
-                           //  className={`item-img ${item.status === 0 ? "hidden" : ""} ${
-                           //    item.status === 1 ? "chosen" : ""
-                           //  }`}
-                           style={[
-                              styles.img_pokemon,
-                              item.status === 0 ? styles.hidden : null,
-                              item.status === 1 ? styles.chosen : null
-                           ]}
-                           source={images[item.data.img]}
-                           alt=""
-                            onClick={() => {
-                              handleSelect(item);
-                            }}
-                        />
+                        <TouchableOpacity onPress={() => handleSelect(item)}>
+                           <Image
+                              style={[
+                                 styles.img_pokemon,
+                                 item.status === 0 ? styles.hidden : null,
+                                 item.status === 1 ? styles.chosen : null
+                              ]}
+                              source={images[item.data.img]} 
+                              alt=""
+                           />
+                        </TouchableOpacity>
                      </View>
                   ))}
                </View>

@@ -42,8 +42,20 @@ export const pokemonSlice = createSlice({
          state.pokeArray = action.payload
       },
 
+      ///////////////////////////////////////
+      resetPokemonState: (state) => {
+         state.pokeArray = []
+      },
+      //////////////////////////////////////
+      shuffle: () => {
+         //Trigger shuffle
+      },
+      shuffleSuccess: (state, action) => {
+         state.pokeArray = action.payload;
+      }
+
    }
 })
 
-export const { createPokemon, createPokemonSuccess, createPokemonFailure, setSelect, setSelectSuccess,updateValidSelect, updateValidSelectSuccess, unSelect, unSelectSuccess } = pokemonSlice.actions;
+export const { createPokemon, createPokemonSuccess, createPokemonFailure, setSelect, setSelectSuccess,updateValidSelect, updateValidSelectSuccess, unSelect, unSelectSuccess, resetPokemonState, shuffle, shuffleSuccess } = pokemonSlice.actions;
 export default pokemonSlice.reducer;
