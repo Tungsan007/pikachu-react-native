@@ -4,6 +4,7 @@ import store from '../redux/store/store'
 import { persistor } from '../redux/store/store'
 import { PersistGate } from "redux-persist/integration/react";
 
+
 export default function RootLayout() {
   return (
     <Provider store={store}>

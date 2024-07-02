@@ -39,12 +39,15 @@ export const styles = StyleSheet.create({
       alignItems: 'center'
    },
 
+   touchableOuter: {
+      pointerEvents: 'none'
+   },
+
    hidden: {
       opacity: 0,
       pointerEvents: 'none'
    },
    chosen: {
-      borderWidth: 2,
       borderStyle: 'solid',
       borderColor: 'rgb(120, 67, 200)',
    },
