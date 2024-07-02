@@ -8,8 +8,8 @@ export const styles = StyleSheet.create({
    },
 
    img_pokemon: {
-      width: 36,
-      height: 36
+      width: 60,
+      height: 60
    },
 
    row_pokemon: {
@@ -48,6 +48,7 @@ export const styles = StyleSheet.create({
       pointerEvents: 'none'
    },
    chosen: {
+      borderWidth: 2,
       borderStyle: 'solid',
       borderColor: 'rgb(120, 67, 200)',
    },

@@ -14,6 +14,8 @@ const Game = () => {
    const dispatch = useDispatch();
    const selectPokemon = useSelector((state) => state.selectPokemon.selectPokemon)
    const { checkPath, resetValidPath, latestPath, resetLatestPathHandler } = Algorithm();
+   // dispatch(createPokemon())
+   // console.log(matrix)
    
    const [regame, setRegame] = useState(false)
 
@@ -126,7 +128,7 @@ const Game = () => {
                            checkPathNode(item.row, item.col) ? styles.pathEffect : ""
                         ]}
                      >
-                        <TouchableOpacity style={[styles.chosen, item.status === 0 ? styles.hidden : null, ]} onPress={() => handleSelect(item)}>
+                        <TouchableOpacity style={[item.status === 1 ? styles.chosen : null, item.status === 0 ? styles.hidden : null, ]} onPress={() => handleSelect(item)}>
                            <Image
                               style={[
                                  styles.img_pokemon,
