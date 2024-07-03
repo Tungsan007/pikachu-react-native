@@ -39,6 +39,10 @@ export const styles = StyleSheet.create({
       alignItems: 'center'
    },
 
+   touchableOuter: {
+      pointerEvents: 'none'
+   },
+
    hidden: {
       opacity: 0,
       pointerEvents: 'none'

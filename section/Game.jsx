@@ -126,7 +126,7 @@ const Game = () => {
                            checkPathNode(item.row, item.col) ? styles.pathEffect : ""
                         ]}
                      >
-                        <TouchableOpacity onPress={() => handleSelect(item)}>
+                        <TouchableOpacity style={[styles.chosen, item.status === 0 ? styles.hidden : null, ]} onPress={() => handleSelect(item)}>
                            <Image
                               style={[
                                  styles.img_pokemon,

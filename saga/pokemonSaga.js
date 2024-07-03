@@ -123,8 +123,18 @@ function* handleShuffle() {
           insideArr[i][j] = rootArr[i + 1][j + 1];
         }
       }
+
+      // Tạo mảng chứa các Pikachu chưa ăn (status: 5)
+      const unshuffledPikachu = [];
+      for (let i = 0; i < 10; i++) {
+         for (let j = 0; j < 10; j++) {
+            if (insideArr[i][j].status === 5) {
+            unshuffledPikachu.push(insideArr[i][j]);
+            }
+         }
+      }
       //xao tron
-      shuffleArray(insideArr);
+      shuffleArray(unshuffledPikachu);
 
       //Tao 1 mang 12*12 de tao duong bao quanh insideArr
       const shuffleArr = [];
@@ -142,9 +152,17 @@ function* handleShuffle() {
       }
 
       //nap gia tri tu A vao B
+      let pikachuIndex = 0;
       for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 10; j++) {
-          shuffleArr[i + 1][j + 1] = insideArr[i][j];
+         //  shuffleArr[i + 1][j + 1] = insideArr[i][j];
+         if (insideArr[i][j].status === 5) {
+            // Thay thế Pikachu chưa ăn đã xáo trộn
+            shuffleArr[i + 1][j + 1] = unshuffledPikachu[pikachuIndex++];
+          } else {
+            // Giữ nguyên Pikachu đã ăn
+            shuffleArr[i + 1][j + 1] = insideArr[i][j];
+          }
         }
       }
 
