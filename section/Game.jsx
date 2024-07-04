@@ -36,7 +36,9 @@ const Game = () => {
                      console.log(matrix[i][j], matrix[k][l])
                      cloneMatrix[i][j].status = 0;
                      cloneMatrix[k][l].status = 0; 
-                     return true;
+                     console.log(matrix[2][3].status)  
+                     console.log(matrix[3][3].status)
+                     // return true;
                   } else {
                      cloneMatrix[i][j].status = 5;
                      cloneMatrix[k][l].status = 5; 
@@ -47,14 +49,15 @@ const Game = () => {
          }
       }
 
-      return false;
+      // return false;
    }
 
    useEffect(() => {
-      if(!isPairMatchable(matrix)) {
-         console.log("Shuffle Success")
-         dispatch(shuffle())
-      }
+      isPairMatchable(matrix)
+      // if(!isPairMatchable(matrix)) {
+      //    console.log("Shuffle Success")
+      //    dispatch(shuffle())
+      // }
    }, [selectPokemon])
    
    const [regame, setRegame] = useState(false)
@@ -139,8 +142,7 @@ const Game = () => {
         const timer = setTimeout(() => {
           resetLatestPathHandler();
         }, 60); 
-  
-        
+
         return () => clearTimeout(timer);
       }
     }, [latestPath, resetLatestPathHandler]);
@@ -168,12 +170,11 @@ const Game = () => {
                            checkPathNode(item.row, item.col) ? styles.pathEffect : ""
                         ]}
                      >
-                        <TouchableOpacity style={[item.status === 1 ? styles.chosen : null, item.status === 0 ? styles.hidden : null, ]} onPress={() => handleSelect(item)}>
+                        <TouchableOpacity style={[styles.div, item.status === 1 ? styles.chosen : null, item.status === 0 ? styles.hidden : null, ]} onPress={() => handleSelect(item)}>
                            <Image
                               style={[
                                  styles.img_pokemon,
                                  item.status === 0 ? styles.hidden : null,
-                                 item.status === 1 ? styles.chosen : null
                               ]}
                               source={images[item.data.img]} 
                               alt=""

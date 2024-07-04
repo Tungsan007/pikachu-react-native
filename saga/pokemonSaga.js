@@ -126,13 +126,9 @@ function* handleShuffle() {
 
       // Tạo mảng chứa các Pikachu chưa ăn (status: 5)
       const unshuffledPikachu = [];
-<<<<<<< HEAD
-      for (let i = 0; i < 10; i++) {
-         for (let j = 0; j < 10; j++) {
-=======
+
       for (let i = 0; i < 6; i++) {
          for (let j = 0; j < 6; j++) {
->>>>>>> origin/main
             if (insideArr[i][j].status === 5) {
             unshuffledPikachu.push(insideArr[i][j]);
             }
@@ -158,13 +154,9 @@ function* handleShuffle() {
 
       //nap gia tri tu A vao B
       let pikachuIndex = 0;
-<<<<<<< HEAD
-      for (let i = 0; i < 10; i++) {
-        for (let j = 0; j < 10; j++) {
-=======
+
       for (let i = 0; i < 6; i++) {
         for (let j = 0; j < 6; j++) {
->>>>>>> origin/main
          //  shuffleArr[i + 1][j + 1] = insideArr[i][j];
          if (insideArr[i][j].status === 5) {
             // Thay thế Pikachu chưa ăn đã xáo trộn

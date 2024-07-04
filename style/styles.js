@@ -33,6 +33,12 @@ export const styles = StyleSheet.create({
    buttonText: {
       color: 'white'
    },
+
+   div: {
+      borderWidth: 2,
+      borderColor: 'white',
+      borderStyle: 'solid',
+   },
    img_back: {
       flex: 1,
       justifyContent: 'center',
