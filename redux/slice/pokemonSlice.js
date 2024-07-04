@@ -22,7 +22,6 @@ export const pokemonSlice = createSlice({
          //Trigger select
       },
       setSelectSuccess: (state, action) => {
-         // console.log(action.payload)
          state.pokeArray = action.payload
       },
       ////////////////////////////////////////

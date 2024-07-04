@@ -8,8 +8,8 @@ export const styles = StyleSheet.create({
    },
 
    img_pokemon: {
-      width: 36,
-      height: 36
+      width: 60,
+      height: 60
    },
 
    row_pokemon: {

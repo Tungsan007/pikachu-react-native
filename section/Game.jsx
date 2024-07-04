@@ -7,6 +7,7 @@ import { images } from '@/data/data';
 import { styles } from '../style/styles'
 import { addSelectPokemon, removeSelectPokemon } from '@/redux/slice/selectPokemonSlice';
 import Algorithm from '../algorithm/algorithm'
+import checkPathForShuffle from '../algorithm/checkpathforShuffle'
 
 const Game = () => {
 
@@ -14,7 +15,48 @@ const Game = () => {
    const dispatch = useDispatch();
    const selectPokemon = useSelector((state) => state.selectPokemon.selectPokemon)
    const { checkPath, resetValidPath, latestPath, resetLatestPathHandler } = Algorithm();
+   const { checkPathShuffle } = checkPathForShuffle();
+   // dispatch(createPokemon())
+   // console.log(matrix)
 
+
+   function isPairMatchable(matrix) {
+      const rows = matrix.length - 2;
+      const cols = matrix[1].length -2;
+
+      const cloneMatrix = JSON.parse(JSON.stringify(matrix));
+
+      for(let i = 1; i <= rows; i++) {
+         for(let j = 1; j <= cols; j++) {
+            for(let k = i; k <= rows; k++) {
+               for(let l = (i === k ? j + 1 : 1); l <= cols; l++) {
+                  cloneMatrix[i][j].status = 1;
+                  cloneMatrix[k][l].status = 1;    
+                  if(matrix[i][j].data.img === matrix[k][l].data.img && matrix[i][j].status !== 0 && matrix[k][l].status !== 0 && checkPathShuffle(cloneMatrix, cloneMatrix[i][j], cloneMatrix[k][l])) {
+                     console.log(matrix[i][j], matrix[k][l])
+                     cloneMatrix[i][j].status = 0;
+                     cloneMatrix[k][l].status = 0; 
+                     return true;
+                  } else {
+                     cloneMatrix[i][j].status = 5;
+                     cloneMatrix[k][l].status = 5; 
+                  }
+                   
+               }
+            }
+         }
+      }
+
+      return false;
+   }
+
+   useEffect(() => {
+      if(!isPairMatchable(matrix)) {
+         console.log("Shuffle Success")
+         dispatch(shuffle())
+      }
+   }, [selectPokemon])
+   
    const [regame, setRegame] = useState(false)
 
    const checkHandler = useCallback(() => {
@@ -96,7 +138,7 @@ const Game = () => {
       if (latestPath.length > 0) {
         const timer = setTimeout(() => {
           resetLatestPathHandler();
-        }, 800); 
+        }, 60); 
   
         
         return () => clearTimeout(timer);
@@ -126,7 +168,7 @@ const Game = () => {
                            checkPathNode(item.row, item.col) ? styles.pathEffect : ""
                         ]}
                      >
-                        <TouchableOpacity style={[styles.chosen, item.status === 0 ? styles.hidden : null, ]} onPress={() => handleSelect(item)}>
+                        <TouchableOpacity style={[item.status === 1 ? styles.chosen : null, item.status === 0 ? styles.hidden : null, ]} onPress={() => handleSelect(item)}>
                            <Image
                               style={[
                                  styles.img_pokemon,

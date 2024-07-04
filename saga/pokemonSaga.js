@@ -26,11 +26,11 @@ function* handleCreatePokemon() {
       shuffleArray(data);
 
          //tao 1 mang 10*10
-         for (let i = 0; i < 10; i++) {
-         let index = i * 10;
-         A[i] = new Array(10);
+         for (let i = 0; i < 6; i++) {
+         let index = i * 6;
+         A[i] = new Array(6);
 
-         for (let j = 0; j < 10; j++) {
+         for (let j = 0; j < 6; j++) {
             A[i][j] = {
                row: i + 1,
                col: j + 1,
@@ -41,21 +41,21 @@ function* handleCreatePokemon() {
          }
 
          //Tao 1 mang 12*12
-         for (let i = 0; i < 12; i++) {
-         B[i] = new Array(12);
+         for (let i = 0; i < 8; i++) {
+         B[i] = new Array(8);
 
-            for (let j = 0; j < 12; j++) {
+            for (let j = 0; j < 8; j++) {
                B[i][j] = { row: i, col: j, status: 0, data: { id: "", img: "" } };
             }
          }
 
          //nap gia tri tu A vao B
-         for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 10; j++) {
+         for (let i = 0; i < 6; i++) {
+            for (let j = 0; j < 6; j++) {
                B[i + 1][j + 1] = A[i][j];
             }
          }
-         
+         // console.log(B)
          yield put(createPokemonSuccess(B))
    } 
 }
@@ -117,17 +117,22 @@ function* handleShuffle() {
       //lay arr 10*10 ben trong
       const insideArr = [];
 
-      for (let i = 0; i < 10; i++) {
-        insideArr[i] = new Array(10);
-        for (let j = 0; j < 10; j++) {
+      for (let i = 0; i < 6; i++) {
+        insideArr[i] = new Array(6);
+        for (let j = 0; j < 6; j++) {
           insideArr[i][j] = rootArr[i + 1][j + 1];
         }
       }
 
       // Tạo mảng chứa các Pikachu chưa ăn (status: 5)
       const unshuffledPikachu = [];
+<<<<<<< HEAD
       for (let i = 0; i < 10; i++) {
          for (let j = 0; j < 10; j++) {
+=======
+      for (let i = 0; i < 6; i++) {
+         for (let j = 0; j < 6; j++) {
+>>>>>>> origin/main
             if (insideArr[i][j].status === 5) {
             unshuffledPikachu.push(insideArr[i][j]);
             }
@@ -138,10 +143,10 @@ function* handleShuffle() {
 
       //Tao 1 mang 12*12 de tao duong bao quanh insideArr
       const shuffleArr = [];
-      for (let i = 0; i < 12; i++) {
-        shuffleArr[i] = new Array(12);
+      for (let i = 0; i < 8; i++) {
+        shuffleArr[i] = new Array(8);
 
-        for (let j = 0; j < 12; j++) {
+        for (let j = 0; j < 8; j++) {
           shuffleArr[i][j] = {
             row: i,
             col: j,
@@ -153,8 +158,13 @@ function* handleShuffle() {
 
       //nap gia tri tu A vao B
       let pikachuIndex = 0;
+<<<<<<< HEAD
       for (let i = 0; i < 10; i++) {
         for (let j = 0; j < 10; j++) {
+=======
+      for (let i = 0; i < 6; i++) {
+        for (let j = 0; j < 6; j++) {
+>>>>>>> origin/main
          //  shuffleArr[i + 1][j + 1] = insideArr[i][j];
          if (insideArr[i][j].status === 5) {
             // Thay thế Pikachu chưa ăn đã xáo trộn
