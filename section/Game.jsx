@@ -24,40 +24,54 @@ const Game = () => {
       const rows = matrix.length - 2;
       const cols = matrix[1].length -2;
 
+      //Clone matrix successfully
       const cloneMatrix = JSON.parse(JSON.stringify(matrix));
 
-      for(let i = 1; i <= rows; i++) {
-         for(let j = 1; j <= cols; j++) {
-            for(let k = i; k <= rows; k++) {
-               for(let l = (i === k ? j + 1 : 1); l <= cols; l++) {
-                  cloneMatrix[i][j].status = 1;
-                  cloneMatrix[k][l].status = 1;    
-                  if(matrix[i][j].data.img === matrix[k][l].data.img && matrix[i][j].status !== 0 && matrix[k][l].status !== 0 && checkPathShuffle(cloneMatrix, cloneMatrix[i][j], cloneMatrix[k][l])) {
-                     console.log(matrix[i][j], matrix[k][l])
-                     cloneMatrix[i][j].status = 0;
-                     cloneMatrix[k][l].status = 0; 
-                     console.log(matrix[2][3].status)  
-                     console.log(matrix[3][3].status)
-                     // return true;
-                  } else {
-                     cloneMatrix[i][j].status = 5;
-                     cloneMatrix[k][l].status = 5; 
-                  }
-                   
-               }
-            }
+      function createElementList(cloneMatrix, rows) {
+         const elements = [];
+         
+         for (let i = 1; i <= rows; i++) {
+           for (let j = 1; j <= rows; j++) {
+             if (cloneMatrix[i][j].status !== 0) {
+               elements.push({ value: cloneMatrix[i][j], position: [i, j] });
+             }
+           }
          }
+       
+         return elements;
       }
 
-      // return false;
+      const elements = createElementList(cloneMatrix, rows);
+     
+      for (let i = 0; i < elements.length; i++) {
+         for (let j = i + 1; j < elements.length; j++) {
+           const elem1 = elements[i];
+           const elem2 = elements[j];
+     
+           if(elem1.value.data.img == elem2.value.data.img) {
+            elem1.value.status = 1;
+            elem2.value.status = 1;
+            if(checkPathShuffle(cloneMatrix, elem1.value, elem2.value)) {
+               console.log(elem1.value, elem2.value)
+               return true;
+            }
+            }
+            elem1.value.status = 5;
+            elem2.value.status = 5;
+         }
+      }
+      
+      return false;
+      
    }
 
    useEffect(() => {
-      isPairMatchable(matrix)
-      // if(!isPairMatchable(matrix)) {
-      //    console.log("Shuffle Success")
-      //    dispatch(shuffle())
-      // }
+      // const bolen = isPairMatchable(matrix)
+      // console.log(bolen)
+      if(!isPairMatchable(matrix)) {
+         console.log("Shuffle Success")
+         dispatch(shuffle())
+      }
    }, [selectPokemon])
    
    const [regame, setRegame] = useState(false)
